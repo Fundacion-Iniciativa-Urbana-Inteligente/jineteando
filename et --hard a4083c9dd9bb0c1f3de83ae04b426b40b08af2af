@@ -1,0 +1,17 @@
+[33mcommit f117fa7016abdcbdc3b083410b25296783e43930[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mDiegoCandia[m[33m, [m[1;31morigin/DiegoCandia[m[33m)[m
+Author: DiegoAgustinCandia <politicomisionero@hotmail.com>
+Date:   Sun Nov 10 21:24:04 2024 -0300
+
+    migrando a mysql falta un poco arreglando configuraciones dentro de Models(user.js) en la raiz app.js package.json package-lock.json
+
+[33mcommit a4083c9dd9bb0c1f3de83ae04b426b40b08af2af[m
+Author: DiegoAgustinCandia <politicomisionero@hotmail.com>
+Date:   Fri Nov 8 12:16:10 2024 -0300
+
+    importe profile a App.jsx
+
+[33mcommit 8431617dce173411a7b93482c1fafa5a173c7de7[m
+Author: DiegoAgustinCandia <politicomisionero@hotmail.com>
+Date:   Fri Nov 8 11:58:10 2024 -0300
+
+    Modifique el archivo App y Main
