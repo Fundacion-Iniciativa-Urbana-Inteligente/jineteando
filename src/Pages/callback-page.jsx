@@ -1,5 +1,5 @@
 import React from "react";
-import { NavBar } from "../components/navigation/desktop/nav-bar";
+import { NavBar } from "../Components/navigation/desktop/nav-bar-tabs.js";
 import { MobileNavBar } from "../components/navigation/mobile/mobile-nav-bar";
 
 export const CallbackPage = () => {
