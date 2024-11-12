@@ -39,7 +39,7 @@ const Menu = () => {
                 <LogoutButton />
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/profile">Nonmbre </NavLink>
+                <NavLink className="nav-link" to="/profile">Nombre </NavLink>
                 <Profile />
               </li>
               <li className="nav-item dropdown">
