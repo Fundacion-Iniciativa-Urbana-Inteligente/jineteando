@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { App } from "./app";
+import { App } from "./app.jsx";
 import { Auth0ProviderWithNavigate } from "./auth0-provider-with-navigate";
 import "./styles/styles.css";
 
