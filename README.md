@@ -1,37 +1,35 @@
-# Proyecto de Movilidad Urbana Sostenible
+# Jineteando
 
 ## Descripción
-Este proyecto es una aplicación web para el estacionamiento medido y seguimiento GPS de bicicletas compartidas. La aplicación está diseñada para promover el uso de transporte sostenible y facilitar la movilidad urbana.
+Jineteando es una aplicación para una plataforma de vehículos compartidos. Esta aplicación permite a los usuarios alquilar y compartir vehículos de manera eficiente y segura.
 
 ## Tecnologías Utilizadas
-- **JavaScript**: 77.1%
-- **CSS**: 14.3%
-- **HTML**: 8.6%
-
-## Características
-- **Estacionamiento Medido**: Sistema para gestionar el estacionamiento de bicicletas en diferentes ubicaciones de la ciudad.
-- **Seguimiento GPS**: Monitoreo en tiempo real de las bicicletas compartidas para mejorar la seguridad y el mantenimiento.
-- **Interfaz de Usuario**: Diseñada para ser intuitiva y fácil de usar, con componentes visuales atractivos.
+- **JavaScript**: 84.9%
+- **CSS**: 9.4%
+- **HTML**: 5.7%
 
 ## Instalación
 Para instalar y ejecutar el proyecto localmente, sigue estos pasos:
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/francogcn/Movilidad-sustentable.git
+   git clone https://github.com/Fundacion-Iniciativa-Urbana-Inteligente/jineteando.git
    ```
 
 2. Navega al directorio del proyecto:
    ```bash
-   cd Movilidad-sustentable
+   cd jineteando
    ```
 
 3. Instala las dependencias:
    ```bash
    npm install
    ```
-
-4. Inicia la aplicación:
+4. Inicia la aplicación con:
+   ```bash
+   npm run dev
+   ```
+5. Abrir otra terminal y ejecutar:
    ```bash
    npm start
    ```
@@ -43,7 +41,9 @@ Las contribuciones son bienvenidas. Si tienes alguna idea o mejora, por favor ab
 Este proyecto no especifica una licencia.
 
 ## Contacto
-Si tienes alguna pregunta o sugerencia, no dudes en ponerte en contacto con el autor del proyecto en [GitHub](https://github.com/francogcn).
+Si tienes alguna pregunta o sugerencia, no dudes en ponerte en contacto con el autor del proyecto en [GitHub]
+FRANCO CABRERA (https://github.com/francogcn).
+AZZIMONTI RENZO (https://github.com/gazzimon)
 
 ```
 
