@@ -1,9 +1,23 @@
-import { useAuth0 } from "@auth0/auth0-react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
+  const navigate = useNavigate();
 
-  return <button onClick={() => loginWithRedirect()}>Log In</button>;
+  const handleLogin = () => {
+    // Por ahora solo simularemos un login exitoso
+    console.log('Usuario ha iniciado sesión');
+    // Podríamos redirigir al usuario a su perfil
+    navigate('/perfil');
+  };
+
+  return (
+    <button 
+      onClick={handleLogin}
+    >
+      Iniciar Sesión
+    </button>
+  );
 };
 
 export default LoginButton;

@@ -1,17 +1,37 @@
 import { NavLink } from "react-router-dom"
 import LoginButton from "./login"
-import LogoutButton from "./logout"
-import Profile from "./profile"
-import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect, useRef } from "react"
 
 const Menu = () => {
-  const { isAuthenticated } = useAuth0();
+  const navbarToggler = useRef(null);
+  const navbarCollapse = useRef(null);
+
+  const closeMenu = () => {
+    // Verifica si el menú está expandido y si estamos en vista móvil
+    if (window.innerWidth < 992 && navbarCollapse.current?.classList.contains('show')) {
+      navbarToggler.current?.click();
+    }
+  };
+
+  // Cerrar menú al cambiar el tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        navbarCollapse.current?.classList.remove('show');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
       <nav className="navbar navbar-expand-lg fixed-top bg-body-tertiary" data-bs-theme="light">
         <div className="container-fluid">
-          <NavLink className="navbar-brand" to="/">Inicio</NavLink>
+          <NavLink className="navbar-brand" to="/" onClick={closeMenu}>Inicio</NavLink>
           <button
+            ref={navbarToggler}
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -22,36 +42,44 @@ const Menu = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul className="navbar-nav">
+          <div 
+            ref={navbarCollapse}
+            className="collapse navbar-collapse" 
+            id="navbarNavDropdown"
+          >
+            <ul className="navbar-nav ms-auto"> {/* Alineación a la derecha */}
               <li className="nav-item">
-                <NavLink className="nav-link" aria-current="page" to="/">Home</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/perfil">Perfil</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/Helpme">Asi Funciona</NavLink>
-              </li>
-              <li className="nav-item">
-                <LoginButton></LoginButton><LogoutButton></LogoutButton>
-              </li>
-
-              <li className="nav-item dropdown">
-                <NavLink
-                  className="nav-link dropdown-toggle"
+                <NavLink 
+                  className="nav-link" 
+                  aria-current="page" 
                   to="/"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  onClick={closeMenu}
                 >
-                  Configuracion
+                  Home
                 </NavLink>
-                <ul className="dropdown-menu">
-                  <li><NavLink className="dropdown-item" to="/edit-data">Editar datos</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/edit-password">Modificar contraseña</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/logout">Cerrar Sesión</NavLink></li>
-                </ul>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  className="nav-link" 
+                  to="/perfil"
+                  onClick={closeMenu}
+                >
+                  Perfil
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  className="nav-link" 
+                  to="/Helpme"
+                  onClick={closeMenu}
+                >
+                  Asi Funciona
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <div onClick={closeMenu}>
+                  <LoginButton />
+                </div>
               </li>
             </ul>
           </div>
@@ -60,4 +88,5 @@ const Menu = () => {
     </>
   );
 }
+
 export default Menu;
