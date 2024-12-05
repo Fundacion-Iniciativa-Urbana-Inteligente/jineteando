@@ -10,6 +10,8 @@ import Helpme from './Pages/Helpme'
 import LoginButton from './Components/login'
 import LogoutButton from './Components/logout'
 import Profile from './Components/profile'
+import Footer from './Components/Footer';
+
 
 function App() {
  
@@ -28,6 +30,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
+      <Footer/>
     </>
   )
 }
