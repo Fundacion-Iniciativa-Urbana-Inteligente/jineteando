@@ -5,7 +5,7 @@ import TokenGen from './TokenGen';
 const posadas = [-27.366666666667, -55.893];
 const ubicBici = [-27.37069, -55.88535];
 const ubiMacro = [-27.365910, -55.894624]
-const isLoged = false;
+const isLoged = true;
 export default function Mapa() {
   
   return (
