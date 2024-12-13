@@ -61,3 +61,37 @@
     gap: 0.5rem;
   }
 } 
+
+/* menu.css */
+.menu {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+}
+
+.menu-logo a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.menu-items {
+  display: flex;
+  gap: 15px;
+}
+
+.menu-link, .menu-button {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+}
+
+.menu-button:hover, .menu-link:hover {
+  text-decoration: underline;
+}
