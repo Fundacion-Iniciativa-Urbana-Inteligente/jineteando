@@ -194,8 +194,8 @@ app.post('/api/walletconnect', async (req, res) => {
     res.status(500).json({ error: 'Error al generar el pago.', details: error.message });
   }
 });
-//Notificaciones de Pago (Webhook)
 
+//Notificaciones de Pago (Webhook)
 app.post('/api/webhook', async (req, res) => {
   const { type, data } = req.body;
 
