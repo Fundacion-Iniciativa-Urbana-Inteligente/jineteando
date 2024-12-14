@@ -5,7 +5,7 @@ import Home from './Pages/Home';
 import Perfil from './Pages/Perfil';
 import NotFound from './Pages/NotFound';
 import Helpme from './Pages/Helpme';
-import Login from './Components/LogIn';
+import LogIn from './Components/LogIn';
 import SignUp from './Components/SignUp';
 import Verify from './Components/Verify'; // Nueva página de verificación
 import Footer from './Components/Footer';
@@ -21,7 +21,7 @@ function App() {
           <Route path="/perfil" element={<Perfil />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/helpme" element={<Helpme />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify/:userId" element={<Verify />} /> {/* Ruta de verificación */}
           </Routes>
