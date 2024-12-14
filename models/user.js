@@ -31,6 +31,11 @@ const userSchema = new mongoose.Schema({
     type: Date, 
     required: false 
   },
+  walletBalance: { 
+    type: Number, 
+    default: 0, // Por defecto, el saldo inicial es 0
+    required: true 
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 
