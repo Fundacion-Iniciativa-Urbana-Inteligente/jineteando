@@ -12,7 +12,6 @@ import User from './models/User.js';
 // Cargar variables de entorno
 dotenv.config();
 
-// Configuración del servidor
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -25,17 +24,14 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 
 // Conexión a MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('Conectado a MongoDB'))
   .catch((err) => console.error('Error al conectar a MongoDB:', err));
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', methods: 'GET,POST,PUT,PATCH,DELETE' })); // Configuración de CORS
-app.use(express.json()); // Parsear JSON
-app.use(express.static(path.join(__dirname, 'public'))); // Servir archivos estáticos
+app.use(cors({ origin: 'http://localhost:5173', methods: 'GET,POST,PUT,PATCH,DELETE' }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas Públicas
 app.get('/', (req, res) => {
@@ -46,12 +42,14 @@ app.get('/', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { name, phone, email, password } = req.body;
   try {
+    // Validar datos obligatorios
     if (!name || !phone || !email || !password) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generar OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const user = new User({
       name,
@@ -64,14 +62,26 @@ app.post('/signup', async (req, res) => {
 
     await user.save();
 
+    // Enviar OTP por Twilio
     await client.messages.create({
       body: `Tu código de verificación es: ${otp}`,
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phone,
     });
 
-    res.status(201).json({ message: 'Usuario registrado. OTP enviado para verificación.' });
+    // Incluir el userId en la respuesta
+    res.status(201).json({
+      message: 'Usuario registrado. OTP enviado para verificación.',
+      userId: user._id,
+    });
   } catch (error) {
+    if (error.code === 11000) {
+      // Detectar campo duplicado
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        message: `El ${duplicateField} ya está registrado.`,
+      });
+    }
     console.error('Error en el registro:', error);
     res.status(500).json({ error: 'Error al registrar usuario', details: error.message });
   }
@@ -79,9 +89,9 @@ app.post('/signup', async (req, res) => {
 
 // Verificación de Teléfono (Verify OTP)
 app.post('/verify', async (req, res) => {
-  const { phone, otp } = req.body;
+  const { userId, otp } = req.body;
   try {
-    const user = await User.findOne({ phone, otp, otpExpires: { $gt: Date.now() } });
+    const user = await User.findOne({ _id: userId, otp, otpExpires: { $gt: Date.now() } });
     if (!user) {
       return res.status(400).json({ message: 'Código OTP inválido o expirado.' });
     }
@@ -91,7 +101,7 @@ app.post('/verify', async (req, res) => {
     user.otpExpires = null;
     await user.save();
 
-    res.status(200).json({ message: 'Teléfono verificado exitosamente.' });
+    res.status(200).json({ message: 'Teléfono verificado exitosamente. Ya puedes iniciar sesión.' });
   } catch (error) {
     console.error('Error al verificar OTP:', error);
     res.status(500).json({ error: 'Error al verificar OTP', details: error.message });
@@ -107,7 +117,7 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Usuario no encontrado.' });
     }
     if (!user.isVerified) {
-      return res.status(400).json({ message: 'Teléfono no verificado.' });
+      return res.status(400).json({ message: 'Teléfono no verificado. Por favor, verifica tu número.' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -125,49 +135,58 @@ app.post('/login', async (req, res) => {
 
 // Recuperar Contraseña (Forgot Password)
 app.post('/forgot-password', async (req, res) => {
-  const { phone } = req.body;
+  const { email } = req.body;
   try {
-    const user = await User.findOne({ phone });
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Usuario no encontrado.' });
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otp = otp;
-    user.otpExpires = Date.now() + 10 * 60 * 1000;
-    await user.save();
+    // Generar token de recuperación
+    const resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    await client.messages.create({
-      body: `Tu código de recuperación es: ${otp}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      to: phone,
-    });
+    // Enviar correo electrónico con el enlace
+    const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+    // Aquí puedes usar una librería como Nodemailer para enviar el correo
+    console.log(`Correo enviado a ${email} con el enlace: ${resetLink}`);
 
-    res.status(200).json({ message: 'Código de recuperación enviado.' });
+    res.status(200).json({ message: 'Correo de recuperación enviado. Revisa tu bandeja de entrada.' });
   } catch (error) {
-    console.error('Error al enviar código de recuperación:', error);
-    res.status(500).json({ error: 'Error al enviar código de recuperación', details: error.message });
+    console.error('Error al enviar correo de recuperación:', error);
+    res.status(500).json({ error: 'Error al enviar correo de recuperación', details: error.message });
   }
 });
 
 // Restablecer Contraseña (Reset Password)
-app.post('/reset-password', async (req, res) => {
-  const { phone, otp, newPassword } = req.body;
+app.post('/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
   try {
-    const user = await User.findOne({ phone, otp, otpExpires: { $gt: Date.now() } });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
     if (!user) {
-      return res.status(400).json({ message: 'Código OTP inválido o expirado.' });
+      return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
-    user.otp = null;
-    user.otpExpires = null;
     await user.save();
 
-    res.status(200).json({ message: 'Contraseña restablecida exitosamente.' });
+    res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
   } catch (error) {
     console.error('Error al restablecer contraseña:', error);
     res.status(500).json({ error: 'Error al restablecer contraseña', details: error.message });
+  }
+});
+
+// Consultar Usuarios
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.find(); // Encuentra todos los registros en la colección de usuarios
+    res.status(200).json(users); // Devuelve los usuarios como JSON
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    res.status(500).json({ message: 'Error al obtener usuarios', details: error.message });
   }
 });
 
